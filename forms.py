@@ -1,19 +1,21 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, IntegerField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 
 
 # Define the Registration Form
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])  
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Register')
 
 
 # Define the Login Form
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])  
     password = PasswordField('Password', validators=[DataRequired()])
+    secret_code = StringField('Secret Code (Optional)')
     submit = SubmitField('Login')
 
 

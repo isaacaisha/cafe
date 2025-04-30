@@ -1,29 +1,24 @@
 {% include 'header.html' %}
 
 <div class="container mt-5">
-    <h3 class="mb-4">Register ¡!¡</h3>
-    <form action="{{ url_for('register') }}" method="post">
-        {{ form.csrf_token }} {# Add the CSRF token here #}
-        {% if error_message %}  {# Update the variable name here #}
-        <div class="alert alert-info">
-          {{ error_message }}  {# Update the variable name here #}
+    <h3>Register</h3>
+    <form method="POST" class="container">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.username.label }}
+            {{ form.username(class="form-control") }}
         </div>
-        {% endif %}
-        {% if register_message %}  {# Update the variable name here #}
-        <div class="alert alert-success">
-          {{ register_message }}  {# Update the variable name here #}
+        <div class="mb-3">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
         </div>
-        {% endif %}
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+        <div class="mb-3">
+            {{ form.password.label }}
+            {{ form.password(class="form-control") }}
         </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <div class="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" class="btn btn-primary">Register</button>
+        <div class="text-center">
+            {{ form.submit(class="btn btn-primary") }}
         </div>
     </form>
 </div>

@@ -3,20 +3,22 @@
 <html lang="en">
 
   <head>
-
   <meta charset="utf-8" />
   <meta name="geo.place-name" content="Spain">
   <meta property="og:type" content="cafes market place">
   <meta name="description" content="This is a cafes market place website.">
   <meta property="og:title" content="cafes market place">
   <meta content="Programmer" property="og:description">
-  <meta property="og:image" content="https://cafe-and-wifi-c91439d2db33.herokuapp.com/static/assets/images/medusa3.png">
-  <meta property="og:url" content="https://cafe-and-wifi-c91439d2db33.herokuapp.com">
+  <meta property="og:image" content="https://cafe.siisi.online/static/assets/images/logo3.png">
+  <!--<meta property="og:image" content="{{ url_for('static',
+                            filename='assets/images/medusa3.png',
+                            _external=True) }}">-->
+  <meta property="og:url" content="https://cafe.siisi.online">
   <meta property="og:description" content="cafes market place - Programmer & Developer, Frontend & Backend">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Programmer & Developer, Frontend & Backend - cafes market place">
   <meta name="twitter:description" content="Programmer & Developer - cafes market place">
-  <meta name="twitter:image" content="https://cafe-and-wifi-c91439d2db33.herokuapp.com/static/assets/images/medusa3.png">
+  <meta name="twitter:image" content="https://cafe.siisi.online/static/assets/images/medusa3.png">
   <meta name="keywords" content="- cafes market place - programmer, developer, frontend, backend, python, javascript">
   <meta name="author" content="Developer">
   <!--<meta name="google-site-verification" content="YOUR_GOOGLE_SEARCH_CONSOLE_VERIFICATION_CODE" />-->
@@ -51,18 +53,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="{{ url_for('register') }}">register</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="{{ url_for('home') }}">home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('get_random_cafe') }}">random-cafe</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('search_cafes_by_location') }}">search</a>
-            </li>
+            {% if not current_user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('login', next=request.path) }}">login</a>
+              </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="{{ url_for('home') }}">home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('get_random_cafe') }}">random-cafe</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('search_cafes_by_location') }}">search</a>
+              </li>
             {% if current_user.is_authenticated %}
             <!-- Display these links only if the user is authenticated -->
               <li class="nav-item">
@@ -75,18 +79,26 @@
                   <a class="nav-link" href="{{ url_for('delete_cafe') }}">delete-cafe</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('logout') }}">logout</a>
+                  <a class="nav-link" href="{{ url_for('delete_user') }}">delete-user</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('delete_user') }}">delete-user</a>
+                  <a class="nav-link" href="{{ url_for('logout') }}">logout</a>
               </li>
             {% else %}
               <!-- Display this link for non-authenticated users -->
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('login', next=request.path) }}">login</a>
+                <a class="nav-link" aria-current="page" href="{{ url_for('register') }}">Register</a>
               </li>
             {% endif %}
           </ul>
         </div>
       </div>
     </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="container alert alert-{{ category }} mt-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}

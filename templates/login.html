@@ -1,24 +1,23 @@
 {% include 'header.html' %}
 
 <div class="container mt-5">
-    <h3 class="mb-4">Login ¡!¡</h3>
-    <form action="{{ url_for('login') }}" method="post">
-        {{ form.csrf_token }} {# Add the CSRF token here #}
-        {% if error_message %}  {# Update the variable name here #}
-        <div class="alert alert-primary">
-          {{ error_message }}  {# Update the variable name here #}
+    <h3>Login</h3>
+    <form method="POST" class="container">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
         </div>
-        {% endif %}
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+        <div class="mb-3">
+            {{ form.password.label }}
+            {{ form.password(class="form-control") }}
         </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+        <div class="mb-3">
+            {{ form.secret_code.label }}
+            {{ form.secret_code(class="form-control") }}
         </div>
-        <div class="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" class="btn btn-primary">Login</button>
+        <div class="text-center">
+            {{ form.submit(class="btn btn-primary") }}
         </div>
     </form>
 </div>
