@@ -6,7 +6,7 @@ from functools import wraps
 import random
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pprint import pprint
 import os
 from flask_sqlalchemy import SQLAlchemy
@@ -82,16 +82,18 @@ def favicon():
 @app.route('/')
 def home():
     cafes = Cafe.query.all()
+    date = datetime.now(timezone.utc).strftime("%a %d %B %Y")
+    print("Date for template:", date)
     if cafes:
-        return render_template('index.html', cafes=cafes, date=current_time, year=current_year)
+        return render_template('index.html', cafes=cafes, date=date, year=current_year)
     else:
         error_message = 'Sorry No Cafes found 😭 ¡!¡'
-        return render_template('index.html', error_message=error_message, date=current_time, year=current_year)
+        return render_template('index.html', error_message=error_message, date=date, year=current_year)
 
 @app.route('/cafe/<int:cafe_id>')
 def cafe_detail(cafe_id):
     cafe = Cafe.query.get_or_404(cafe_id)
-    return render_template('cafe_detail.html', cafe=cafe, date=current_time, year=current_year)
+    return render_template('cafe_detail.html', cafe=cafe, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/random')
 def get_random_cafe():
@@ -100,7 +102,7 @@ def get_random_cafe():
         flash('No cafés available.', 'info')
         return redirect(url_for('home'))
     random_cafe = random.choice(cafes)
-    return render_template('random_cafe.html', random_cafe=random_cafe, date=current_time, year=current_year)
+    return render_template('random_cafe.html', random_cafe=random_cafe, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search_cafes_by_location():
@@ -130,8 +132,7 @@ def search_cafes_by_location():
         form=form,
         cafes_by_location=cafes,
         error_message=error_message,
-        date=current_time,
-        year=current_year
+        date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year
     )
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -148,7 +149,7 @@ def register():
         login_user(new_user)
         flash(f"Welcome, {new_user.username}!", "success")
         return redirect(url_for('home'))
-    return render_template('register.html', form=form, date=current_time, year=current_year)
+    return render_template('register.html', form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -157,14 +158,14 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if not user or not check_password_hash(user.password, form.password.data):
             flash("Invalid email or password. Please try again.", "danger")
-            return render_template('login.html', form=form, date=current_time, year=current_year)
+            return render_template('login.html', form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
         if form.secret_code.data == 'siisi321' and user.role != 'admin':
             user.role = 'admin'
             db.session.commit()
             flash("Admin access granted!", "info")
         login_user(user)
         return redirect(url_for('home'))
-    return render_template('login.html', form=form, date=current_time, year=current_year)
+    return render_template('login.html', form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/logout')
 def logout():
@@ -187,7 +188,7 @@ def add_new_cafe():
     if form.validate_on_submit():
         if Cafe.query.filter_by(name=form.name.data).first():
             flash('Cafe name exists.', 'warning')
-            return render_template('add_cafe.html', form=form, date=current_time, year=current_year)
+            return render_template('add_cafe.html', form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
         new_cafe = Cafe(
             author_id=current_user.id,
             name=form.name.data,
@@ -204,12 +205,12 @@ def add_new_cafe():
         db.session.add(new_cafe)
         db.session.commit()
         return redirect(url_for('cafe_detail', cafe_id=new_cafe.id))
-    return render_template('add_cafe.html', form=form, date=current_time, year=current_year)
+    return render_template('add_cafe.html', form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/choose-cafe', methods=['GET'])
 def choose_cafe():
     cafes = Cafe.query.all()
-    return render_template('choose_cafe.html', cafes=cafes, date=current_time, year=current_year)
+    return render_template('choose_cafe.html', cafes=cafes, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/update-price/<int:cafe_id>', methods=['GET', 'POST', 'PATCH'])
 @admin_required
@@ -221,7 +222,7 @@ def update_cafe_price(cafe_id):
         db.session.commit()
         flash(f"Price updated to {cafe.coffee_price}.", "success")
         return redirect(url_for('cafe_detail', cafe_id=cafe_id))
-    return render_template('update_price.html', cafe=cafe, form=form, date=current_time, year=current_year)
+    return render_template('update_price.html', cafe=cafe, form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/delete-cafe', methods=['GET', 'POST'])
 @admin_required
@@ -235,7 +236,7 @@ def delete_cafe():
             flash('Cafe deleted.', 'success')
         else:
             flash('Cafe not found.', 'warning')
-    return render_template('delete.html', form=form, date=current_time, year=current_year)
+    return render_template('delete.html', form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 @app.route('/delete-user', methods=['GET', 'POST'])
 @admin_required
@@ -249,7 +250,7 @@ def delete_user():
             flash('User deleted.', 'success')
         else:
             flash('User not found.', 'warning')
-    return render_template('delete_user.html', form=form, date=current_time, year=current_year)
+    return render_template('delete_user.html', form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
