@@ -63,7 +63,7 @@ A **Flask**-powered web app for discovering, adding, and managing cafés around 
    ```bash
    ```
 
-git clone [https://github.com/isaacaisha/cafe-explorer.git](https://github.com/isaacaisha/cafe-explorer.git)
+git clone [https://github.com/isaacaisha/cafe.git](https://github.com/isaacaisha/cafe.git)
 cd cafe-explorer
 
 ````
