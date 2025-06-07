@@ -73,6 +73,7 @@ class Cafe(db.Model):
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}
 
 with app.app_context():
+    #db.drop_all()
     db.create_all()
 
 @app.route('/favicon.ico')
