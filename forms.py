@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, IntegerField, PasswordField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, URL
 
 
 # Define the Registration Form
@@ -27,6 +27,11 @@ class SearchCafeForm(FlaskForm):
 class UpdateCafePriceForm(FlaskForm):
     new_price = StringField('New Price:', validators=[DataRequired()])
     submit = SubmitField('Update Price')
+
+
+class UpdateCafeImgUrlForm(FlaskForm):
+    new_img_url = StringField("New Image URL", validators=[DataRequired(), URL()])
+    submit = SubmitField("Update Image URL")
 
 
 class AddCafeForm(FlaskForm):

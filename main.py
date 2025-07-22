@@ -12,7 +12,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from forms import (
-    RegistrationForm, LoginForm, SearchCafeForm,
+    RegistrationForm, LoginForm, SearchCafeForm, UpdateCafeImgUrlForm,
     UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm
 )
 from flask_migrate import Migrate
@@ -224,6 +224,28 @@ def update_cafe_price(cafe_id):
         flash(f"Price updated to {cafe.coffee_price}.", "success")
         return redirect(url_for('cafe_detail', cafe_id=cafe_id))
     return render_template('update_price.html', cafe=cafe, form=form, date=datetime.now(timezone.utc).strftime("%a %d %B %Y"), year=current_year)
+
+@app.route('/update_img/<int:cafe_id>', methods=['GET', 'POST'])
+@admin_required
+def update_cafe_img_url(cafe_id):
+    cafe = Cafe.query.get_or_404(cafe_id)
+    form = UpdateCafeImgUrlForm()
+
+    if form.validate_on_submit():
+        cafe.img_url = form.new_img_url.data
+        db.session.commit()
+        flash('Cafe image URL updated successfully!', 'success')
+        return redirect(url_for('cafe_detail', cafe_id=cafe.id))
+
+    # Pre-fill the form with the current img_url
+    form.new_img_url.data = cafe.img_url
+    return render_template(
+        'update_img.html',
+        form=form,
+        cafe=cafe,
+        date=datetime.now(timezone.utc).strftime("%a %d %B %Y"),
+        year=current_year
+    )
 
 @app.route('/delete-cafe', methods=['GET', 'POST'])
 @admin_required

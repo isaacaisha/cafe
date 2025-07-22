@@ -14,6 +14,10 @@
         <p>Café can take calls: {{ cafe.can_take_calls }}</p>
         <p>Café coffee price: {{ cafe.coffee_price }}</p>
 
+        {% if current_user.is_authenticated and current_user.role == 'admin' %}
+            <a href="{{ url_for('update_cafe_img_url', cafe_id=cafe.id) }}">Update Image URL</a>
+        {% endif %}
+
         <!-- Embed Google Maps using iframe -->
         <!--
         <div class="map-container">
